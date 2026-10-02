@@ -1,196 +1,215 @@
 # TopoBot
 
 <p align="center">
-  <strong>Holonomic mobile robot for automated topographic surface measurements</strong><br>
-  ENSIM × ESGT · Engineering Project · 2025–2026
+  <strong>Autonomous holonomic robot for topographic surface flatness inspection</strong><br>
+  ENSIM × ESGT · 4th-year engineering project · 2025–2026
 </p>
 
 <p align="center">
-  <img src="assets/images/topobot-hero.png"
-       alt="TopoBot holonomic mobile robot"
-       width="700">
+  <img src="assets/images/hero/topobot-hero.png" alt="TopoBot robot" width="780">
 </p>
+
+---
 
 ## Overview
 
-**TopoBot** is a holonomic mobile robot developed to automate surface flatness measurements using a robotic total station.
+**TopoBot** is a holonomic mobile robot designed to automate **surface flatness inspection** using a **robotic total station**.
 
-In a conventional workflow, an operator manually moves a reflector from point to point while another operator controls the total station. TopoBot was designed to automate this process by moving the reflector across a configurable measurement grid, coordinating robot motion with topographic measurements and exporting the acquired data.
+In a conventional workflow, an operator manually moves a prism from point to point while another operator performs measurements with the total station.  
+TopoBot replaces this repetitive process by autonomously moving over a configurable grid, deploying the prism at measurement points, and coordinating the acquisition workflow.
 
-The project was developed by a **4-student engineering team** as part of the ENSIM × ESGT collaboration.
-
----
-
-## System architecture
-
-TopoBot uses a distributed embedded architecture separating high-level supervision from real-time control.
-
-```mermaid
-flowchart TD
-    A[Tablet / PC<br>TopoBot Manager]
-    B[Raspberry Pi<br>High-level supervision]
-    C[STM32 F446RE<br>Real-time control]
-    D[Custom control board]
-    E[2x Sabertooth motor drivers]
-    F[4 DC motors<br>Mecanum wheels]
-    G[Wheel encoders]
-    H[AX-12 servo<br>Prism deployment]
-    I[XBee radio link]
-    J[Robotic total station]
-
-    A <--> B
-    B <--> C
-    C --> D
-    D --> E
-    E --> F
-    G --> C
-    C --> H
-    B <--> I
-    I <--> J
-```
-
-### Main hardware
-
-- STM32 Nucleo F446RE
-- Raspberry Pi
-- Lynxmotion A4WD3 mobile base
-- 4 Mecanum wheels
-- 2 Sabertooth motor drivers
-- Incremental wheel encoders
-- AX-12 servomotor
-- XBee S2C radio modules
-- Robotic total station
-- Custom KiCad control board
-- Emergency-stop and battery-monitoring circuitry
+The project was developed by a **4-student engineering team** as part of the **ENSIM × ESGT** collaboration.
 
 ---
 
-## Embedded control
+## Why this project matters
 
-The STM32 firmware provides the real-time control layer of the robot.
+TopoBot was designed to:
 
-The firmware is organised into several modules:
-
-- Mecanum wheel control
-- odometry
-- PID control
-- robot state and motion control
-- Raspberry Pi / STM32 communication protocol
-- AX-12 servomotor control
-- encoder acquisition
-
-A lightweight binary protocol is used between the Raspberry Pi and the STM32 to coordinate high-level missions with the embedded controller.
-
-The mission logic is based on a configurable grid and a boustrophedon-style trajectory.
+- reduce manual effort during topographic inspection;
+- improve repeatability of measurement campaigns;
+- automate prism positioning over a measurement grid;
+- provide a digital supervision interface for mission execution and monitoring;
+- enable export of measurement data for post-processing.
 
 ---
 
-## Electronics
+## Key features
 
-A dedicated control board was designed in **KiCad** and manufactured for the project.
+- **Holonomic mobile platform** with **Mecanum wheels**
+- **STM32 F446RE** for real-time embedded control
+- **Raspberry Pi** for high-level supervision
+- **Custom KiCad control board**
+- **XBee radio communication** with the robotic total station workflow
+- **AX-12 servo** for prism deployment
+- **Mission planning** over a configurable grid
+- **Tablet-oriented supervision app**: *TopoBot Manager*
+- **Real-time activity log** and measurement monitoring
+- **CSV data export**
+- **Prototype validated on physical robot**
+
+---
+
+## System at a glance
+
+### Robot platform
 
 <p align="center">
-  <img src="assets/images/control-and-power-board.png"
-       alt="TopoBot custom control and power electronics"
-       width="750">
+  <img src="assets/images/hardware/robot-platform.png" alt="TopoBot physical platform" width="760">
 </p>
 
-The board integrates the main interfaces required by the robot, including:
-
-- encoder signals
-- motor-control connections
-- AX-12 servomotor interface
-- XBee communication
-- emergency-stop circuitry
-- battery monitoring
-
-The repository contains both the **KiCad design sources** and the **Gerber manufacturing files**.
-
----
-
-## TopoBot Manager
-
-TopoBot is supervised through **TopoBot Manager**, a tablet-oriented interface connected to the Raspberry Pi.
+### Total station used for measurements
 
 <p align="center">
-  <img src="assets/images/topobot-manager-dashboard.png"
-       alt="TopoBot Manager supervision interface"
-       width="800">
+  <img src="assets/images/hardware/total-station.png" alt="Robotic total station" width="350">
 </p>
 
-The application provides:
+### CAD overview
 
-- robot connection checking
-- mission configuration
-- measurement-grid configuration
-- live mission monitoring
-- 2D trajectory visualisation
-- telemetry and event logging
-- emergency-stop control
-- measurement-data export
-
-Measurement points can be stored locally and exported as CSV files for further processing.
+<p align="center">
+  <img src="assets/images/hardware/robot-cad-render.png" alt="TopoBot CAD render" width="600">
+</p>
 
 ---
 
-## Testing and validation
+## Mission workflow
 
-The project was validated progressively on the physical prototype.
+A typical TopoBot mission follows these steps:
 
-Tests included:
-
-- individual motor and wheel-direction checks
-- Mecanum movement validation
-- encoder acquisition
-- odometry tests
-- Raspberry Pi / STM32 communication
-- XBee communication
-- AX-12 prism deployment
-- trajectory execution
-- integration tests on the complete robot
-
-The tests validated the basic motion capabilities, the command architecture and the prism-deployment mechanism.
-
-### Identified improvements
-
-The project also highlighted several areas for future development:
-
-- finer PID tuning
-- improved trajectory accuracy
-- odometry / total-station data fusion
-- increased radio-link reliability
-- improved autonomous navigation robustness
+1. Define the measurement area and grid resolution  
+2. Initialize the robot and the measurement workflow  
+3. Start the mission from the TopoBot Manager interface  
+4. Navigate autonomously from point to point  
+5. Deploy the prism at each measurement location  
+6. Receive and log measurement feedback  
+7. Display mission progress in real time  
+8. Export the collected data  
 
 ---
 
-## My contribution
+# Hardware
 
-Within the four-person project team, my work focused mainly on:
+Main hardware components:
 
-- developing and validating robot movements;
-- using encoder feedback to analyse and reduce positioning errors;
-- testing Mecanum-wheel motion and trajectory execution;
-- participating in the integration of the STM32, Raspberry Pi, motors and actuators;
-- contributing to mission point and trajectory management;
-- carrying out functional tests on the physical prototype.
-
----
-
-## Demo
-
-A short video of the robot operating on the prototype is available here:
-
-### [? Watch the TopoBot demo](assets/video/topobot-demo.mp4)
+- STM32 Nucleo F446RE  
+- Raspberry Pi  
+- Lynxmotion A4WD3 mobile chassis  
+- 4 Mecanum wheels  
+- 2 Sabertooth motor drivers  
+- Incremental wheel encoders  
+- AX-12 servomotor  
+- XBee S2C radio modules  
+- Robotic total station  
+- Custom power/control board  
+- Battery monitoring and emergency stop  
 
 ---
 
-## Repository structure
+# Custom electronics
 
-```text
+A dedicated board was designed in KiCad and manufactured for the project.
+
+<p align="center">
+  <img src="assets/images/hardware/control-and-power-board.png" alt="TopoBot custom board" width="760">
+</p>
+
+This board integrates:
+
+- encoder interfaces  
+- motor-driver connections  
+- AX-12 interface  
+- XBee communication interface  
+- emergency-stop circuitry  
+- battery monitoring  
+
+---
+
+# Embedded control
+
+The STM32 firmware provides the real-time layer of the robot.
+
+Main embedded functions:
+
+- Mecanum wheel control  
+- motion execution  
+- encoder acquisition  
+- odometry  
+- PID-based control  
+- robot state management  
+- Raspberry Pi / STM32 communication  
+- AX-12 prism deployment control  
+
+The mission logic relies on a configurable measurement grid and a **boustrophedon-style trajectory**.
+
+---
+
+# Validation and results
+
+The prototype was progressively validated on the physical robot.
+
+Validation activities included:
+
+- motor direction checks  
+- wheel-level testing  
+- Mecanum movement validation  
+- encoder acquisition  
+- odometry tests  
+- Raspberry Pi / STM32 communication  
+- XBee communication tests  
+- AX-12 prism deployment  
+- full mission integration testing  
+
+### What was successfully validated
+
+- basic robot movement  
+- embedded control architecture  
+- mission supervision workflow  
+- prism deployment mechanism  
+- communication chain between subsystems  
+
+### Main improvement areas identified
+
+- finer PID tuning  
+- improved positioning accuracy  
+- odometry / total-station data fusion  
+- increased radio-link reliability  
+- more robust autonomous mission execution  
+
+---
+
+# Budget
+
+The project was developed under a **€500 budget**.
+
+- Estimated total budget: **€500**  
+- Actual project cost: **€318.26**  
+
+A reuse-oriented approach was adopted to limit costs and improve sustainability.
+
+---
+
+# My contribution
+
+Within the 4-student team, my work focused mainly on:
+
+- developing and validating the robot’s movements  
+- testing trajectory execution on the prototype  
+- using encoder feedback to identify and reduce motion errors  
+- contributing to the integration of the STM32, Raspberry Pi, motors and actuators  
+- participating in mission-point and trajectory management  
+- conducting functional tests on the robot  
+
+---
+
+# Repository structure
+
 topobot/
-¦
 +-- assets/
 ¦   +-- images/
+¦   ¦   +-- hero/
+¦   ¦   +-- hardware/
+¦   ¦   +-- ui/
+¦   ¦   +-- diagrams/
 ¦   +-- video/
 ¦
 +-- docs/
@@ -203,89 +222,80 @@ topobot/
 ¦
 +-- hardware/
 ¦   +-- control-board/
-¦       +-- Kicad/
+¦       +-- kicad/
 ¦       +-- manufacturing/
 ¦           +-- gerbers/
 ¦
 +-- software/
-    +-- raspberry-pi/
-    ¦   +-- tests/
-    ¦
-    +-- topobot-manager/
-        +-- backend/
-        +-- frontend/
-```
++-- raspberry-pi/
++-- topobot-manager/
++-- backend/
++-- frontend/
 
-Generated build files, virtual environments, local databases and temporary files are intentionally excluded from version control.
 
 ---
 
-## Technologies
+# Technologies
 
-**Embedded systems**
+### Embedded systems  
+C · STM32 F446RE · STM32CubeIDE · HAL  
 
-`C` · `STM32 F446RE` · `STM32CubeIDE` · `HAL`
+### High-level software  
+Python · Raspberry Pi  
 
-**High-level software**
+### Robotics & control  
+Mecanum kinematics · Encoders · Odometry · PID · AX-12  
 
-`Python` · `Raspberry Pi`
+### Communication  
+UART · XBee  
 
-**Robotics & control**
+### Electronics  
+KiCad · PCB design · Gerber  
 
-`Mecanum kinematics` · `Encoders` · `Odometry` · `PID` · `AX-12`
-
-**Communication**
-
-`UART` · `XBee`
-
-**Electronics**
-
-`KiCad` · `PCB design` · `Gerber`
-
-**Development & validation**
-
-`Git` · `GitHub` · `Hardware testing` · `Technical documentation`
+### Development & validation  
+Git · GitHub · Hardware testing · Technical documentation  
 
 ---
 
-## Documentation
+# Demo
 
-Detailed engineering documentation is available in [`docs/`](docs/).
+A short demonstration video is available in the repository:
+
+- **[Watch the demo](assets/video/topobot-demo.mp4)**
+
+Tip: for better GitHub presentation, you can also add a GIF preview in `assets/images/hero/`.
+
+---
+
+# Documentation
+
+Detailed engineering documentation is available in `docs/`.
 
 Main documents:
 
-- [Final project report](docs/report/Rapport_final.pdf)
-- [Project presentation](docs/presentation/TopoBot_Presentation.pdf)
-- [STM32 firmware documentation](docs/technical/firmware/)
-- [Hardware and wiring documentation](docs/technical/hardware/)
-- [Raspberry Pi documentation](docs/technical/raspberry-pi/)
-- [Testing documentation](docs/technical/tests/)
-- [Odometry, PID and validation documents](docs/technical/advanced/)
+- **[Final project report](docs/report/Rapport_final.pdf)**  
+- **[Project presentation](docs/presentation/TopoBot_Presentation.pdf)**  
 
 ---
 
-## Project team
+# Future work
 
-Engineering project — **ENSIM × ESGT**
+Possible next improvements include:
 
-- Benewinde Kontiebo
-- Michael ESSOMBA
-- Arsène NGUENANG YOUKAP
-- Aymane Fariss
+- better localization accuracy  
+- improved closed-loop control tuning  
+- tighter integration with the total station feedback  
+- improved communication robustness  
+- more autonomous and fault-tolerant mission execution  
 
+---
+
+# Authors
+
+- Benewinde Kontiebo  
+- Michael Essomba  
+- Arsène Nguenang Youkap  
+- Aymane Fariss  
+
+**ENSIM × ESGT**  
 Academic year: **2025–2026**
-
----
-
-## Project status
-
-The project reached an integrated prototype stage with:
-
-- functional holonomic motion;
-- embedded real-time control;
-- custom control electronics;
-- AX-12 prism deployment;
-- radio communication with the measurement system;
-- a functional tablet supervision interface.
-
-Further work would focus mainly on control-loop tuning, localisation accuracy and robustness of the complete autonomous measurement workflow.
